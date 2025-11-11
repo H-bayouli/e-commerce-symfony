@@ -1,0 +1,7 @@
+<h1>Mon panier</h1>
+<ul>
+{% for ligne in panier.items %}
+  <li>{{ ligne.produit.nom }} (x{{ ligne.quantite }}) - {{ ligne.sousTotal }} €</li>
+{% endfor %}
+</ul>
+<p>Total : {{ panier.calculerTotal() }} €</p>
