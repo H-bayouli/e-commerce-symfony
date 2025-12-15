@@ -1,0 +1,6 @@
+{{ form_start(form) }}
+    {{ form_row(form.name,{attr:{'class':'form form-control'}}) }}
+    {{ form_row(form.category,{attr:{'class':'form form-control'}}) }}
+    <br>
+    <button class="btn btn-outline-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

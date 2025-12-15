@@ -1,0 +1,46 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<style>
+    table{
+        width:100%;
+        border-collapse: collapse;
+    }
+    th, td{
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    thead{
+        background: #f2f2f2;
+    }
+<div class="container">
+<h2>facture n° {{commande.id}}</h3>
+<span>Date: {{commande.createdAt|date}} </span>
+<h4>Confirmation de reception de la commande</h3>
+<h4>Détails de la commande</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nom du produit</th>
+            <th>Prix unitaire</th>
+            <th>Quantité</th>
+            <th>Prix total</th>
+            <th>Ville</th>
+        </tr>
+    </thead>
+    {% for produit in commande.commanderProduits %}
+        <tr>
+            <td>{{produit.produit.nom}}</td>
+            <td>{{produit.produit.prix}}</td>
+            <td>{{produit.qte}}</td>
+            <td>{{produit.produit.adresse}}</td>
+            <td>{{produit.produit.prix * produit.qte}}</td>
+        </tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+<h5>Frai de livraison: {{commande.city.shippingCost}} Dinars</h5>
+<hr></hr>
+<h5>Totla à payer: {{commande.prixTotal}} Dinars</h5>
+</div>

@@ -16,16 +16,12 @@ class Client extends User
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'client')]
     private Collection $commandes;
 
-    /**
-     * @var Collection<int, Avis>
-     */
-    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'client')]
-    private Collection $avis;
+
+
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
-        $this->avis = new ArrayCollection();
     }
 
     /**

@@ -18,8 +18,7 @@ class Panier
     /**
      * @var Collection<int, LignePanier>
      */
-    #[ORM\OneToMany(targetEntity: LignePanier::class, mappedBy: 'panier')]
-    private Collection $items;
+
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Client $client = null;

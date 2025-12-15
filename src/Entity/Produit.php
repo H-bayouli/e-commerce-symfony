@@ -15,7 +15,7 @@ class Produit
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
@@ -27,8 +27,6 @@ class Produit
     #[ORM\Column]
     private ?int $stock = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $categorie = null;
 
     /**
      * @var Collection<int, Avis>
@@ -45,10 +43,35 @@ class Produit
     #[ORM\OneToMany(targetEntity: LignePanier::class, mappedBy: 'produit')]
     private Collection $lignePaniers;
 
+    /**
+     * @var Collection<int, SubCategory>
+     */
+    #[ORM\ManyToMany(targetEntity: SubCategory::class, inversedBy: 'produits')]
+    private Collection $subcategories;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    /**
+     * @var Collection<int, AddProductHistory>
+     */
+    #[ORM\OneToMany(targetEntity: AddProductHistory::class, mappedBy: 'produit')]
+    private Collection $addProductHistories;
+
+    /**
+     * @var Collection<int, CommanderProduits>
+     */
+    #[ORM\OneToMany(targetEntity: CommanderProduits::class, mappedBy: 'produit')]
+    private Collection $commanderProduits;
+
+
     public function __construct()
     {
         $this->avis = new ArrayCollection();
         $this->lignePaniers = new ArrayCollection();
+        $this->subcategories = new ArrayCollection();
+        $this->addProductHistories = new ArrayCollection();
+        $this->commanderProduits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,18 +123,6 @@ class Produit
     public function setStock(int $stock): static
     {
         $this->stock = $stock;
-
-        return $this;
-    }
-
-    public function getCategorie(): ?string
-    {
-        return $this->categorie;
-    }
-
-    public function setCategorie(string $categorie): static
-    {
-        $this->categorie = $categorie;
 
         return $this;
     }
@@ -182,6 +193,102 @@ class Produit
             // set the owning side to null (unless already changed)
             if ($lignePanier->getProduit() === $this) {
                 $lignePanier->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SubCategory>
+     */
+    public function getSubcategories(): Collection
+    {
+        return $this->subcategories;
+    }
+
+    public function addSubcategory(SubCategory $subcategory): static
+    {
+        if (!$this->subcategories->contains($subcategory)) {
+            $this->subcategories->add($subcategory);
+        }
+
+        return $this;
+    }
+
+    public function removeSubcategory(SubCategory $subcategory): static
+    {
+        $this->subcategories->removeElement($subcategory);
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AddProductHistory>
+     */
+    public function getAddProductHistories(): Collection
+    {
+        return $this->addProductHistories;
+    }
+
+    public function addAddProductHistory(AddProductHistory $addProductHistory): static
+    {
+        if (!$this->addProductHistories->contains($addProductHistory)) {
+            $this->addProductHistories->add($addProductHistory);
+            $addProductHistory->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddProductHistory(AddProductHistory $addProductHistory): static
+    {
+        if ($this->addProductHistories->removeElement($addProductHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($addProductHistory->getProduit() === $this) {
+                $addProductHistory->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CommanderProduits>
+     */
+    public function getCommanderProduits(): Collection
+    {
+        return $this->commanderProduits;
+    }
+
+    public function addCommanderProduit(CommanderProduits $commanderProduit): static
+    {
+        if (!$this->commanderProduits->contains($commanderProduit)) {
+            $this->commanderProduits->add($commanderProduit);
+            $commanderProduit->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommanderProduit(CommanderProduits $commanderProduit): static
+    {
+        if ($this->commanderProduits->removeElement($commanderProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($commanderProduit->getProduit() === $this) {
+                $commanderProduit->setProduit(null);
             }
         }
 

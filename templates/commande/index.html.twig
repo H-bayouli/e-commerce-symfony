@@ -1,20 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello OrderController!{% endblock %}
+{% block title %}Hello CommandeController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/hamzab/smartshop/src/Controller/OrderController.php</code></li>
-        <li>Your template at <code>/home/hamzab/smartshop/templates/order/index.html.twig</code></li>
-    </ul>
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <h1>Commande</h1>
+            {{ form_start(form,{'attr':{'data-turbo':'false'}}) }}
+                {{ form_widget(form) }}
+                <br>
+                <input value="continuer" type="submit" class="btn btn-outline-primary">
+            {{ form_end(form) }}
+        </div>
+        <div class="col-4"><br>
+            <span>Montant à payer</span>
+            <h4 >
+                <span id="prix-panier">{{total}} Dinars</span>
+            </h4>
+            <span>Frais de livraison</span>
+            <h4>
+                <span id="shippingCost"><span>
+                Dinars
+            </h4>
+            <span>Montant total à payer</span>
+            <h4>
+                <span class="prix-total"></span>
+                Dinars
+            </h4>
+        </div>
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        const citySelector= $('#commande-city');
+        const cityValue= citySelector.val()
+
+        const url=`http://localhost:8000/city/${cityValue}/shipping/cost`;
+
+        function ajaxRequest(url){
+            $.ajax({
+                url:url,
+                type:'GET',
+                success:function(response){
+                    const newResponse = JSON.parse(response);
+                    if(parseInt(newResponse.status)===200){
+                        $("#shippingCost").text(newResponse.content);
+                        const prixPanier=parseInt($('#prix-panier').text());
+                        const shipping=parseInt($('#shippingCost').text());
+                        $(.total-prix).text(prixPanier+shipping);
+                    }
+                },
+                error:function (whr,status,error) {
+                    
+                }
+            })
+        }
+
+        ajaxRequest(url);
+
+        citySelector.on('change',function () {
+            const urlUpdate=`http://localhost:8000/city/${$(this).val()}/shipping/cost`;
+            alert(urlUpdate);
+        })
+    })
+</script>
 {% endblock %}

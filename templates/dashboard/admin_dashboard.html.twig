@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #f5f6fa;
+    }
+    .sidebar {
+        height: 100vh;
+        background: #343a40;
+        padding-top: 20px;
+    }
+    .sidebar a {
+        color: #cfd8dc;
+        display: block;
+        padding: 12px 20px;
+        text-decoration: none;
+    }
+    .sidebar a:hover {
+        background: #495057;
+        color: #fff;
+    }
+    .content {
+        padding: 20px;
+    }
+    .card {
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <h4 class="text-light text-center mb-3">Admin Panel</h4>
+
+            <a href="{{ path('app_admin_dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ path('app_user') }}">👥 Manage Users</a>
+            <a href="#">📦 Manage Products</a>
+            <a href="#">🛒 Orders</a>
+            <a href="#">⚙️ Settings</a>
+
+            <hr class="bg-light">
+
+            <a href="{{ path('app_logout') }}" class="text-danger">🚪 Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 content">
+
+            <h2 class="mb-4">Welcome, Admin 👋</h2>
+
+            <!-- Statistics Cards -->
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm p-3">
+                        <h5>Total Users</h5>
+                        <h2>{{ userCount ?? '123' }}</h2>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm p-3">
+                        <h5>Orders Today</h5>
+                        <h2>{{ todayOrders ?? '42' }}</h2>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm p-3">
+                        <h5>Active Admins</h5>
+                        <h2>{{ adminCount ?? '3' }}</h2>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Latest activity -->
+            <div class="card shadow-sm p-4 mt-4">
+                <h4>Recent Activity</h4>
+                <hr>
+                <ul>
+                    <li>User <strong>John Doe</strong> registered.</li>
+                    <li>Admin <strong>Sarah</strong> edited a product.</li>
+                    <li>New order placed by <strong>Michael</strong>.</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

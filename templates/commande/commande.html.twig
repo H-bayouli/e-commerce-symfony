@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CommandeController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <br>
+        <h1>Commandes</h1>
+            {% for commande in commandes %}
+                <h2>commande n° {{commande.id}}</h3>
+                {% if commande.isCompleted %}
+                    <h4>Commande est livrée: {{commande.createdAt|date}}</h4>
+                {% else %}
+                    <h4>Commande n'est pas livrée: {{commande.createdAt|date}}</h4>
+                {% endif %}
+                <h4>Information du client</h3>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>telephone</th>
+                        <th>Adresse</th>
+                        <th>Ville</th>
+                    </tr>
+                    <tr>
+                        <td>{{commande.firstName}}</td>
+                        <td>{{commande.lastName}}</td>
+                        <td>{{commande.phone}}</td>
+                        <td>{{commande.adresse}}</td>
+                        <td>{{commande.city.name}}</td>
+                    </tr>
+                </table>
+                <h4>corps de la commande</h4>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>image</th>
+                        <th>Nom du produit</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th>Prix total</th>
+                        <th>Ville</th>
+                    </tr>
+                    {% for produit in commande.commanderProduits %}
+                        <tr>
+                            <td> 
+                                <img src="{{ asset('uploads/images/' ~ produit.image) }}"
+                                    class="card-img-top"
+                                    alt="{{ produit.nom }}"
+                                    style="height: 100px; object-fit: cover;"
+                                >
+                            </td>
+                            <td>{{produit.produit.nom}}</td>
+                            <td>{{produit.produit.prix}}</td>
+                            <td>{{produit.qte}}</td>
+                            <td>{{produit.produit.adresse}}</td>
+                            <td>{{produit.produit.prix * produit.qte}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <br>
+                <br>
+                <h5>Frai de livraison: {{commande.city.shippingCost}} Dinars</h5>
+                <h5>Totla à payer: {{commande.prixTotal}} Dinars</h5>
+                <a href="{{path('app_bill',{'id':commande.id})}}" class="btn btn-outline-primary">imprimer la facture</a>
+                {% if commande.isCompleted == false %}
+                    <a href="{{path('app_commande_iscompleted_update',{'id':commande.id})}}" class="btn btn-outline-primary">Marquer comme livrée</a>
+                {% endif %}
+                <a onclick="return confirm('voulez-vous vraiment supprimer cette commande')" href="{{path('app_commande_remove',{'id':commande.id})}}" class="btn btn-outline-danger">Supprimer</a>
+            {% endfor %}
+            {{ knp_pagination_render(commandes, 'layouts/pagination.html.twig') }}
+{% endblock %}

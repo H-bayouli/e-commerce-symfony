@@ -1,0 +1,35 @@
+<style>
+a.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+a.button:hover {
+  background-color: #0056b3;
+}
+</style>
+
+<div class="container">
+<h1>Users</h1>
+<table border="2">
+    <tr>
+        <th>email</th>
+        <th>password</th>
+        <th>roles</th>
+    </tr>
+    {% for u in users %}
+        <tr>
+            <td>{{ u.email }}</td>
+            <td>{{ u.password }}</td>
+            <td>{{ u.roles }}</td>
+            <td>
+                <a href="{{ path('app_user_delete', {'id': u.id}) }}" class="button">Delete</a>
+                <a href="{{ path('app_user_update', {'id': u.id}) }}" class="button">Update</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+</div>

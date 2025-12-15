@@ -1,0 +1,105 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+  <div class="container-fluid">
+
+    <a class="navbar-brand" href="{{ path('app_home') }}">SmartShop</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      {# LEFT SIDE #}
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ path('app_home') }}">Home</a>
+        </li>
+
+        {% if categories is defined %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              Categories
+            </a>
+            <ul class="dropdown-menu">
+              {% for category in categories %}
+                <li>
+                  <span class="dropdown-item text-success fw-bold">
+                    {{ category.name }}
+                  </span>
+                </li>
+                {% for subcategory in category.subCategories %}
+                  <li>
+                    <a class="dropdown-item"
+                       href="{{ path('app_product_filter', {'id': subcategory.id}) }}">
+                      {{ subcategory.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+                <li><hr class="dropdown-divider"></li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endif %}
+
+        {% if is_granted('ROLE_ADMIN') %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              Admin
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ path('app_category') }}">Categories</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_sub_category_index') }}">sous catégories</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_user') }}">Utilisateurs</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_produit_index') }}">Produits</a></li>
+            </ul>
+          </li>
+        {% endif %}
+
+        {% if not app.user %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
+          </li>
+        {% endif %}
+
+
+        {% if is_granted('ROLE_EDITOR') %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              Commandes
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ path('app_commande',{'type':'is-completed'}) }}">commandes livrées</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_commande',{'type':'pay-onstripe-not-delivered'}) }}">commandes payées en lignes non livrées</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_commande',{'type':'pay-onstripe-is-delivered'}) }}">commandes payées en lignes livrées</a></li>
+            </ul>
+          </li>
+        {% endif %}
+      </ul>
+
+      {# RIGHT SIDE #}
+      <div class="d-flex align-items-center gap-2">
+
+        <form data-turbo="false" method="get" class="d-flex" role="search" action="{{path('app_search_engine')}}">
+          <input class="form-control" name="word" type="search" placeholder="rechercher un produit">
+          <button class="btn btn-outline-success ms-2" type="submit">
+            Search
+          </button>
+        </form>
+
+        {% if app.user %}
+          <a class="btn btn-outline-danger" href="{{ path('app_logout') }}">
+            Logout
+          </a>
+          <p style="color:white">{{app.user.name}} {{app.user.lastname}}</p>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</nav>

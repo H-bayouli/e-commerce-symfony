@@ -1,0 +1,42 @@
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<title>Produits</title>
+{% endblock %}
+
+{% block body %}
+    
+    <div class="container">
+        <div class="card mb-12" style="margin-top:70px">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ asset('uploads/images/'~produit.image) }}" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{produit.nom}}</h5>
+                        <p class="card-text">{{produit.description}}</p>
+                        <h3>{{produit.prix}} Dinars </h3>
+                        <a href="{{path('panier_index',{'id': produit.id })}}" class="btn btn-outline-primary">Ajouter au panier</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>Dérniers produits ajoutés</h2>
+        <div class="rows">
+            {% for produit in dernierproduits %}
+                <div class="col-md-3 mt-4">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ asset('uploads/images/'~produit.image) }}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <a style="text-decoration:none" href="{{ path('app_product_show', {'id': produit.id}) }}"><h5 class="card-title">{{produit.name}}</h5></a>
+                            <p class="card-text">{{produit.description|slice(0,50)}}...</p>
+                            <h3>{{produit.prix}} Dinars </h3>
+                            <a href="{{path('add_panier',{'id': produit.id })}}" class="btn btn-outline-primary">Ajouter au panier</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,23 +1,86 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Register{% endblock %}
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<title>Register</title>
+{% endblock %}
 
 {% block body %}
-<div class="container security-form">
-<div class="login-form">
-    <h1>Register</h1>
 
-    {{ form_errors(registrationForm) }}
+<div class="container mt-5" style="max-width: 550px;">
+    <div class="card p-4 shadow-sm">
+        <h1 class="text-center mb-4">Register</h1>
 
-    {{ form_start(registrationForm) }}
-        {{ form_widget(registrationForm.email,{'attr':{'class':'form form-control','palceholder':"email"}}) }}
-        <br>
-        {{ form_widget(registrationForm.plainPassword, {'attr':{'class':'form form-control','palceholder':"password"}}) }}
-        <br>
-        {{ form_row(registrationForm.agreeTerms) }}
+        {# Show global form errors #}
+        {{ form_errors(registrationForm) }}
 
-        <button type="submit" class="btn btn-block btn-primary">Register</button>
-    {{ form_end(registrationForm) }}
+        {{ form_start(registrationForm) }}
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                {{ form_widget(registrationForm.name, {
+                    'attr': {'class':'form-control', 'placeholder': 'Name'}
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Last name</label>
+                {{ form_widget(registrationForm.lastname, {
+                    'attr': {'class':'form-control', 'placeholder': 'Last name'}
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                {{ form_widget(registrationForm.email, {
+                    'attr': {'class':'form-control', 'placeholder': 'Email'}
+                }) }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    {{ form_widget(registrationForm.plainPassword, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Password',
+                            'id': 'password-field'
+                        }
+                    }) }}
+
+                    <span class="input-group-text" id="toggle-password" style="cursor:pointer;">
+                        <i class="bi bi-eye-slash"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+
+        {{ form_end(registrationForm) }}
+        <a class="btn btn-secondary w-100" href="{{ path('app_login') }}" >Back to login</a>
+    </div>
 </div>
-</div>
+
+{# ---------------- PASSWORD TOGGLE SCRIPT ---------------- #}
+<script>
+document.getElementById('toggle-password').addEventListener('click', function () {
+    const input = document.getElementById('password-field');
+    const icon = this.querySelector('i');
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    } else {
+        input.type = "password";
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    }
+});
+</script>
+
 {% endblock %}

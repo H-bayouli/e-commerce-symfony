@@ -13,9 +13,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap([
-    'client' => Client::class,
+    'user' => User::class,
     'administrateur' => Admin::class,
-    'vendeur' => Vendeur::class
+    'vendeur'=>Vendeur::class,
+    'client'=>Client::class
 ])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -42,6 +43,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $lastname = null;
+
 
     public function getId(): ?int
     {
@@ -132,6 +140,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(?string $lastname): static
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }

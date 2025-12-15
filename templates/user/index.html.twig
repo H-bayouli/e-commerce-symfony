@@ -1,0 +1,54 @@
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<title>categories</title>
+{% endblock %}
+
+{% block body %}
+{% include 'layouts/nav.html.twig' %}
+<div class="container">
+<h1>Utilisateurs</h1>
+{% include 'layouts/_flash_message.html.twig'%}
+<br/>
+<table class="table">
+<tr>
+<th>id</th>
+<th>nom</th>
+<th>prenom</th>
+<th>email</th>
+<th>role</th>
+<th>action</th>
+</tr>
+{% for user in users %}
+    <tr>
+    <td>{{user.id}}</td>
+    <td>{{user.name}}</td>
+    <td>{{user.lastname}}</td>
+    <td>{{user.email}}</td>
+    <td>
+        {% if ('ROLE_ADMIN' in user.roles) %}
+            administrateur
+        {% elseif ('ROLE_EDITOR' in user.roles) %}
+            editeur
+        {% else %}
+            client
+        {% endif %}
+    </td>
+    <td>
+        {% if ('ROLE_ADMIN' in user.roles) == false %}
+            {% if ('ROLE_EDITOR' in user.roles) == false %}
+                <a onclick="return confirm('voulez-vous vraiment ajouter un role éditeur')" class="btn btn-outline-primary" href="{{path('app_user_to_editor',{'id':user.id})}}">ajouter comme éditeur</a>
+            {% else %}
+                <a onclick="return confirm('voulez-vous vraiment retirer un role éditeur')" class="btn btn-danger" href="{{path('app_user_remove_editor',{'id':user.id})}}">retiréer le role éditeur</a>
+            {% endif %}
+            <a onclick="return confirm('voulez-vous vraiment supprimer cet utilsateur')" class="btn btn-danger" href="{{path('app_user_delete',{'id':user.id})}}">Supprimer</a>
+        {% endif %}
+    </td>
+    </tr>
+    {% else %}
+    <p>Aucune categorie</p>
+{% endfor %}
+</table>
+</div>
+{% endblock %}
