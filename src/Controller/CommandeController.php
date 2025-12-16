@@ -10,6 +10,7 @@ use App\Form\CommandeType;
 use App\Repository\CommandeRepository;
 use App\Repository\ProduitRepository;
 use App\service\PanierService;
+use App\service\StripePayment;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -26,7 +27,7 @@ final class CommandeController extends AbstractController
     public function __construct(private MailerInterface $mailer){}
 
 
-    #[Route('/commande', name: 'app_commande')]
+    #[Route('/editor/commande/update', name: 'app_commande')]
     public function index(Request $request, 
         SessionInterface $session, 
         ProduitRepository $produit_repository,
@@ -42,8 +43,8 @@ final class CommandeController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){   
             if(!empty($data['total'])){
                 $PrixTotal=$data['total']*$commande->getCity()->getShippingCost();
-                $commande->setPrixTotal($PrixTotal);
-                $commande->setCreateAt(new DateTimeImmutable());
+                $commande->setTotal($PrixTotal);
+                $commande->setCreatedAt(new DateTimeImmutable());
                 //$commande->setIsPaymentCompleted();
                 $entityManager->persist($commande);
                 $entityManager->flush();
@@ -77,13 +78,13 @@ final class CommandeController extends AbstractController
                 
                 $shippingCost=$commande->getCity()->getShippingCost();
 
-                //$payment=new StripePayment();
+                $payment=new StripePayment();
 
-                //$payment->startPayment($data,$shippingCost,$commande->getId());
+                $payment->startPayment($data,$shippingCost,$commande->getId());
 
-                //$stripeRedirectUrl= $payment->getStripeRedirectUrl();
+                $stripeRedirectUrl= $payment->getStripeRedirectUrl();
 
-                //return $this->redirect($stripeRedirectUrl);
+                return $this->redirect($stripeRedirectUrl);
             }
 
         }
@@ -104,7 +105,7 @@ final class CommandeController extends AbstractController
             $data=$commandeRepository->findBy(['isCompleted'=>null,'payOnDelivery'=>0,'isPaymentCompleted'=>1],['id'=>'DESC']);
         }elseif($type=='pay-onstripe-is-delivered'){
             $data=$commandeRepository->findBy(['isCompleted'=>1,'payOnDelivery'=>1,'isPaymentCompleted'=>1],['id'=>'DESC']);
-        }elseif($type=='valider commande'){
+        }elseif($type=='valider_commande'){
             $data=$commandeRepository->findBy([],['id'=>'DESC']);
         }
         $data=$commandeRepository->findBy([],['id'=>'DESC']);

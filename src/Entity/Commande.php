@@ -28,127 +28,101 @@ class Commande
     private ?string $adresse = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $client = null;
+
+    #[ORM\ManyToOne]
     private ?City $city = null;
 
     #[ORM\Column]
-    private ?bool $payOnDelivery = null;
+    private bool $payOnDelivery = false;
 
-    /**
-     * @var Collection<int, CommanderProduits>
-     */
-    #[ORM\OneToMany(targetEntity: CommanderProduits::class, mappedBy: 'commande')]
+    #[ORM\OneToMany(targetEntity: CommanderProduits::class, mappedBy: 'commande', cascade: ['persist'], orphanRemoval: true)]
     private Collection $commanderProduits;
 
     #[ORM\Column]
-    private ?float $prixTotal = null;
+    private float $total = 0;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $isCompleted = null;
+    #[ORM\Column]
+    private bool $isCompleted = false;
+
+    #[ORM\Column]
+    private bool $isPaymentCompleted = false;
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\Column]
-    private ?bool $isPaymentCompleted = null;
-
-    //getter and setter
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Panier $panier = null;
 
     public function __construct()
     {
         $this->commanderProduits = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\Column(length: 255)]
+    private string $status = "Pending"; 
 
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
+    // ================= GETTERS / SETTERS =================
 
-    public function setFirstName(string $firstName): static
-    {
-        $this->firstName = $firstName;
+    public function getId(): ?int { return $this->id; }
 
+    public function getClient(): ?Client { return $this->client; }
+
+    public function setClient(?Client $client): static
+    {
+        $this->client = $client;
         return $this;
     }
 
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): static
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone): static
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(string $adresse): static
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-
-    public function getCreateAt(): ?\DateTimeImmutable
-    {
-        return $this->createAt;
-    }
-
-    public function setCreateAt(\DateTimeImmutable $createAt): static
-    {
-        $this->createAt = $createAt;
-
-        return $this;
-    }
-
-    public function getCity(): ?City
-    {
-        return $this->city;
-    }
+    public function getCity(): ?City { return $this->city; }
 
     public function setCity(?City $city): static
     {
         $this->city = $city;
-
         return $this;
     }
 
-    public function isPayOnDelivery(): ?bool
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt= $createdAt;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getTotal(): float
+    {
+        return $this->total;
+    }
+
+    public function setTotal(float $prixTotal): static
+    {
+        $this->total = $prixTotal;
+        return $this;
+    }
+
+    public function isPayOnDelivery(): bool
     {
         return $this->payOnDelivery;
     }
 
-    public function setPayOnDelivery(bool $payOnDelivery): static
+    public function isCompleted(): bool
     {
-        $this->payOnDelivery = $payOnDelivery;
+        return $this->isCompleted;
+    }
 
-        return $this;
+    public function isPaymentCompleted(): bool
+    {
+        return $this->isPaymentCompleted;
     }
 
     /**
@@ -159,73 +133,38 @@ class Commande
         return $this->commanderProduits;
     }
 
-    public function addCommanderProduit(CommanderProduits $commanderProduit): static
-    {
-        if (!$this->commanderProduits->contains($commanderProduit)) {
-            $this->commanderProduits->add($commanderProduit);
-            $commanderProduit->setCommande($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommanderProduit(CommanderProduits $commanderProduit): static
-    {
-        if ($this->commanderProduits->removeElement($commanderProduit)) {
-            // set the owning side to null (unless already changed)
-            if ($commanderProduit->getCommande() === $this) {
-                $commanderProduit->setCommande(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getPrixTotal(): ?float
-    {
-        return $this->prixTotal;
-    }
-
-    public function setPrixTotal(float $prixTotal): static
-    {
-        $this->prixTotal = $prixTotal;
-
-        return $this;
-    }
-
-    public function isCompleted(): ?bool
-    {
-        return $this->isCompleted;
-    }
-
-    public function setIsCompleted(?bool $isCompleted): static
-    {
-        $this->isCompleted = $isCompleted;
-
-        return $this;
-    }
-
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): ?static
     {
-        $this->email = $email;
+        $this->email=$email;
+        return $this;
+    }
+
+    public function getPanier(): ?Panier
+    {
+        return $this->panier;
+    }
+
+    public function setPanier(?Panier $panier): static
+    {
+        $this->panier = $panier;
 
         return $this;
     }
 
-    public function isPaymentCompleted(): ?bool
+
+    public function getStatus(): string
     {
-        return $this->isPaymentCompleted;
+        return $this->status;
     }
 
-    public function setIsPaymentCompleted(bool $isPaymentCompleted): static
+    public function setStatus(string $status): self
     {
-        $this->isPaymentCompleted = $isPaymentCompleted;
-
+        $this->status = $status;
         return $this;
     }
 }

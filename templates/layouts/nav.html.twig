@@ -12,10 +12,11 @@
 
       {# LEFT SIDE #}
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-        <li class="nav-item">
-          <a class="nav-link active" href="{{ path('app_home') }}">Home</a>
-        </li>
+        {% if not is_granted('ROLE_ADMIN')  %}
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ path('app_home') }}">Home</a>
+          </li>
+        {% endif %}
 
         {% if categories is defined %}
           <li class="nav-item dropdown">
@@ -42,17 +43,23 @@
             </ul>
           </li>
         {% endif %}
-
+        {% if not is_granted('ROLE_ADMIN') %}
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ path('panier_index') }}">Panier</a>
+          </li>
+        {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
               Admin
             </a>
             <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ path('app_category') }}">Liste des paniers</a></li>
               <li><a class="dropdown-item" href="{{ path('app_category') }}">Categories</a></li>
               <li><a class="dropdown-item" href="{{ path('app_sub_category_index') }}">sous catégories</a></li>
               <li><a class="dropdown-item" href="{{ path('app_user') }}">Utilisateurs</a></li>
               <li><a class="dropdown-item" href="{{ path('app_produit_index') }}">Produits</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_city_index') }}">villes</a></li>
             </ul>
           </li>
         {% endif %}

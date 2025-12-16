@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Panier;
 use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Stripe;
@@ -31,9 +32,9 @@ final class StripeController extends AbstractController
     }
 
     #[Route('/stripe/notify',name: 'app_stripe_notify')]
-    public function stripeNotify(Request $request,CommandeRepository $commanderepository, EntityManagerInterface $en):Response
+    public function stripeNotify($orderId,Request $request,CommandeRepository $commanderepository, EntityManagerInterface $en,Commande $commande):Response
     {
-        $order = $commandeRepository->find($orderId);
+        $order = $commanderepository->find($orderId);
 
         $panierPrix= $commande->getTotalPrice();
 

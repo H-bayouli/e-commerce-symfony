@@ -40,6 +40,44 @@
                 </tr>
             </tbody>
         </table>
+        <br>
+        <hr>
+        <h3>Avis des clients</h3>
+
+        {% if produit.avis|length > 0 %}
+            {% for avis in produit.avis %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <strong>Note:</strong> {{ avis.note }}/5 <br>
+                        <strong>Commentaire:</strong>
+                        <p>{{ avis.commentaire }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">Aucun avis pour ce produit.</p>
+        {% endif %}
+
+        <hr>
+        <h4>Laisser un avis</h4>
+
+        <form method="post" action="{{ path('app_avis_add', {id: produit.id}) }}">
+            <div class="mb-2">
+                <label class="form-label">Note (1–5)</label>
+                <select name="note" class="form-control" required>
+                    {% for i in 1..5 %}
+                        <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Commentaire</label>
+                <textarea name="commentaire" class="form-control" required></textarea>
+            </div>
+
+            <button class="btn btn-primary">Envoyer</button>
+        </form>
 
         <a class="btn btn-outline-primary" href="{{ path('app_produit_index') }}">back to list</a>
 

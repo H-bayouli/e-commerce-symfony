@@ -17,7 +17,7 @@ class CityType extends AbstractType
                 'attr'=>['class'=>'form form-control']
             ])
             ->add('shippingCost',null,[
-                'label'=>'shipping cost',
+                'label'=>'frais d\'expédition',
                 'attr'=>['class'=>'form form-control']
             ])
         ;

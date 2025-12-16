@@ -10,7 +10,7 @@
       <h1>Panier</h1>
       <table class="table table-bordered">
         <tr>
-          <th>Nom product</th>
+          <th>Nom produit</th>
           <th>prix</th>
           <th>quantité</th>
           <th>prix total</th>
@@ -33,7 +33,7 @@
       <br><br>
       <h2>Total: {{total}} Dinars</h2>
       <div class="row">
-        <a data-turbo="false" href="{{path('app_commande',{'type':'valider commande'})}}" class="btn btn-primary col-2 m-lg-1">valider la commande</a>
+        <a data-turbo="false" href="{{ path('valider_commande') }}" class="btn btn-primary col-2 m-lg-1">valider la commande</a>
         <a href="{{path('panier_remove_all')}}" class="btn btn-danger col-2 m-lg-1">supprimer le panier</a>
       </div>
   </div>

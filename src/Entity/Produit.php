@@ -38,12 +38,6 @@ class Produit
     private ?Vendeur $vendeur = null;
 
     /**
-     * @var Collection<int, LignePanier>
-     */
-    #[ORM\OneToMany(targetEntity: LignePanier::class, mappedBy: 'produit')]
-    private Collection $lignePaniers;
-
-    /**
      * @var Collection<int, SubCategory>
      */
     #[ORM\ManyToMany(targetEntity: SubCategory::class, inversedBy: 'produits')]
@@ -68,7 +62,6 @@ class Produit
     public function __construct()
     {
         $this->avis = new ArrayCollection();
-        $this->lignePaniers = new ArrayCollection();
         $this->subcategories = new ArrayCollection();
         $this->addProductHistories = new ArrayCollection();
         $this->commanderProduits = new ArrayCollection();
@@ -135,7 +128,7 @@ class Produit
         return $this->avis;
     }
 
-    public function addAvi(Avis $avi): static
+    public function addAvis(Avis $avi): static
     {
         if (!$this->avis->contains($avi)) {
             $this->avis->add($avi);
@@ -145,7 +138,7 @@ class Produit
         return $this;
     }
 
-    public function removeAvi(Avis $avi): static
+    public function removeAvis(Avis $avi): static
     {
         if ($this->avis->removeElement($avi)) {
             // set the owning side to null (unless already changed)
@@ -165,36 +158,6 @@ class Produit
     public function setVendeur(?Vendeur $vendeur): static
     {
         $this->vendeur = $vendeur;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, LignePanier>
-     */
-    public function getLignePaniers(): Collection
-    {
-        return $this->lignePaniers;
-    }
-
-    public function addLignePanier(LignePanier $lignePanier): static
-    {
-        if (!$this->lignePaniers->contains($lignePanier)) {
-            $this->lignePaniers->add($lignePanier);
-            $lignePanier->setProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLignePanier(LignePanier $lignePanier): static
-    {
-        if ($this->lignePaniers->removeElement($lignePanier)) {
-            // set the owning side to null (unless already changed)
-            if ($lignePanier->getProduit() === $this) {
-                $lignePanier->setProduit(null);
-            }
-        }
 
         return $this;
     }

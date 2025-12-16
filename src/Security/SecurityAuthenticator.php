@@ -58,7 +58,7 @@ class SecurityAuthenticator extends AbstractLoginFormAuthenticator
 
         // Redirect editor (optional)
         if (in_array('ROLE_EDITOR', $user->getRoles(), true)) {
-            return new RedirectResponse($this->urlGenerator->generate('editor_dashboard'));
+            return new RedirectResponse($this->urlGenerator->generate('app_home'));
         }
 
         // Redirect normal users
