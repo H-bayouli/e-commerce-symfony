@@ -54,12 +54,14 @@
               Admin
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ path('app_category') }}">Liste des paniers</a></li>
+              <li><a class="dropdown-item" href="">Liste des paniers</a></li>
               <li><a class="dropdown-item" href="{{ path('app_category') }}">Categories</a></li>
               <li><a class="dropdown-item" href="{{ path('app_sub_category_index') }}">sous catégories</a></li>
               <li><a class="dropdown-item" href="{{ path('app_user') }}">Utilisateurs</a></li>
               <li><a class="dropdown-item" href="{{ path('app_produit_index') }}">Produits</a></li>
               <li><a class="dropdown-item" href="{{ path('app_city_index') }}">villes</a></li>
+              <li><a class="dropdown-item" href="{{ path('app_commande_create') }}">creer commande</a></li>
+
             </ul>
           </li>
         {% endif %}

@@ -32,7 +32,7 @@ class Commande
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Client $client = null;
+    private ?User $client = null;
 
     #[ORM\ManyToOne]
     private ?City $city = null;
@@ -70,11 +70,55 @@ class Commande
 
     // ================= GETTERS / SETTERS =================
 
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $name): static
+    {
+        $this->firstName=$name;
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastname): static
+    {
+        $this->lastName=$lastname;
+        return $this;
+    }
+
+        public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone=$phone;
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse=$adresse;
+        return $this;
+    }
+
     public function getId(): ?int { return $this->id; }
 
     public function getClient(): ?Client { return $this->client; }
 
-    public function setClient(?Client $client): static
+    public function setClient(?User $client): static
     {
         $this->client = $client;
         return $this;

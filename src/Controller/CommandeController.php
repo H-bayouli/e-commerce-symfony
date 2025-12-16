@@ -94,6 +94,75 @@ final class CommandeController extends AbstractController
         ]);
     }
 
+    #[Route('/editor/commande/create', name: 'app_commande_create')]
+    public function createCommande(
+        Request $request, 
+        SessionInterface $session, 
+        ProduitRepository $produit_repository,
+        CommandeRepository $commandeRepository, 
+        EntityManagerInterface $entityManager,
+        PanierService $panierserivce
+    ):Response
+    {
+                $data= $panierserivce->getPanier($session);
+
+        $commande= new Commande();
+        $form=$this->createForm(CommandeType::class,$commande);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){   
+            if(!empty($data['total'])){
+                $PrixTotal=$data['total']*$commande->getCity()->getShippingCost();
+                $commande->setTotal($PrixTotal);
+                $commande->setCreatedAt(new DateTimeImmutable());
+                //$commande->setIsPaymentCompleted();
+                $entityManager->persist($commande);
+                $entityManager->flush();
+
+                foreach($data['panier'] as $value){
+                    $commandeProduit= new CommanderProduits();
+                    $commandeProduit->setCommande($commande);
+                    
+                    $commandeProduit->setProduit($value['produit']);
+                    $commandeProduit->setQte($value['quantity']);
+                    $entityManager->persist($commandeProduit);
+                    $entityManager->flush();
+                }
+                if($commande->isPayOnDelivery()){
+                    $session->set('cart',[]);
+
+                    $html=$this->renderView('mail/orderconfirrm.html.twig',[
+                        'commande'=>$commande
+                    ]);
+
+                    $email=(new Email())
+                    ->from('myshop@gmail.com')
+                    ->to($commande->getEmail())
+                    ->subject('confirmation de reception de la commande')
+                    ->html($html);
+
+                    $this->mailer->send($email);
+                    
+                    return $this->redirectToRoute('commande_message');
+                }
+                
+                $shippingCost=$commande->getCity()->getShippingCost();
+
+                $payment=new StripePayment();
+
+                $payment->startPayment($data,$shippingCost,$commande->getId());
+
+                $stripeRedirectUrl= $payment->getStripeRedirectUrl();
+
+                return $this->redirect($stripeRedirectUrl);
+            }
+
+        }
+        return $this->render('commande/index.html.twig', [
+            'form'=>$form->createView(),
+            'total'=>$data['total']
+        ]);
+    }
+
 
 
     #[Route('/editor/commande/{type}', name: 'app_commande')]
